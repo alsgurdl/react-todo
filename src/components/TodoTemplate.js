@@ -5,8 +5,9 @@ import TodoInput from './TodoInput';
 import '../scss/TodoTemplate.scss';
 
 const TodoTemplate = () => {
-  //백엔드 서버에 할 일 목록 을 요청 > 나중에
-  //todos 배열을
+  // 백엔드 서버에 할 일 목록(json)을 요청(fetch)해서 받아와야 함. -> 나중에 하자.
+
+  // todos 배열을 상태 관리
   const [todos, setTodos] = useState([
     {
       id: 1,
@@ -29,40 +30,78 @@ const TodoTemplate = () => {
       done: false,
     },
   ]);
-  //아이디 값 시퀀스 함수 DB연동시 필요없음
+
+  // id값 시퀀스 함수 (DB 연동시키면 필요없게 됨.)
   const makeNewId = () => {
     if (todos.length === 0) return 1;
-    return todos[todos.length - 1].id + 1; //맨마지막 할일 객체의 id보다 하나 크게
+    return todos[todos.length - 1].id + 1; // 맨 마지막 할 일 객체의 id보다 하나 크게
   };
+
   /*
-Todoinput에게 todotext를 받아오는 함수
-자식 컴포넌트가 부모 컴포넡트에게 데이터를 전달할 때는
-일반적인 prps 사용이 분가능 
-부모컴포넌트에서 함수를 선언(매게변수 꼭선언)> props로 함수를 전달
-자식 컴포넌트에서 전달받은 함수를 호출하면서 매개값으로 데이터전달
-*/
+  TodoInput에게 todoText를 받아오는 함수
+  자식 컴포넌트가 부모 컴포넌트에게 데이터를 전달할 때는
+  일반적인 props 사용이 불가능.
+  부모 컴포넌트에서 함수를 선언(매개변수 꼭 선언) -> props로 함수를 전달.
+  자식 컴포넌트에서 전달받은 함수를 호출하면서 매개값으로 데이터를 전달.
+  */
   const addTodo = (todoText) => {
     const newTodo = {
       id: makeNewId(),
       title: todoText,
       done: false,
-    }; //나중에는 패치를 이용해서 백엔드에 insert 요청을 보냄야함
-    //react의 상태변수는 불변성을 가지기때문에
-    //기존 상태에서 변경은 불가능 > 새로운 상태러 만들어서 변경해야 한다
+    }; // 나중에는 fetch를 이용해서 백엔드에 insert 요청을 보내야 함.
+    console.log(newTodo);
 
-    setTodos([...todos, newTodo]);
+    // todos.push(newTodo); (x) -> useState 변수는 setter로 변경
+    // setTodos(newTodo); (x)
+    // react의 상태변수는 불변성(immutable)을 가지기 때문에
+    // 기존 상태에서 변경은 불가능 -> 새로운 상태로 만들어서 변경해야 한다.
+    setTodos((oldTodos) => {
+      return [...oldTodos, newTodo];
+    });
   };
-  //할 일 삭재
-  const removeTode = (id) => {
-    const removedTodes = todos.filter(
-      (todo) => todo.id !== id,
+
+  // 할 일 삭제 처리 함수
+  const removeTodo = (id) => {
+    // const removedTodos = todos.filter(
+    //   (todo) => todo.id !== id,
+    // );
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  // 할 일 체크 처리 함수
+  const checkTodo = (id) => {
+    /*
+    const copyTodos = [...todos];
+    for (let cTodo of copyTodos) {
+      if (cTodo.id === id) {
+        cTodo.done = !cTodo.done;
+      }
+    }
+    setTodos(copyTodos);
+    */
+
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id
+          ? { ...todo, done: !todo.done }
+          : todo,
+      ),
     );
-    setTodos(removedTodes);
   };
+
+  // 체크가 안 된 할 일의 개수를 카운트 하기
+  const countRestTodo = () =>
+    todos.filter((todo) => !todo.done).length;
+
   return (
     <div className="TodoTemplate">
-      <TodoHeader />
-      <TodoMain todoList={todos} remove={removeTode} />
+      <TodoHeader count={countRestTodo} />
+      <TodoMain
+        todoList={todos}
+        remove={removeTodo}
+        check={checkTodo}
+      />
       <TodoInput addTodo={addTodo} />
     </div>
   );
