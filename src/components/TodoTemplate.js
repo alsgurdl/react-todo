@@ -52,11 +52,17 @@ Todoinput에게 todotext를 받아오는 함수
 
     setTodos([...todos, newTodo]);
   };
-  console.log(todos);
+  //할 일 삭재
+  const removeTode = (id) => {
+    const removedTodes = todos.filter(
+      (todo) => todo.id !== id,
+    );
+    setTodos(removedTodes);
+  };
   return (
     <div className="TodoTemplate">
       <TodoHeader />
-      <TodoMain todoList={todos} />
+      <TodoMain todoList={todos} remove={removeTode} />
       <TodoInput addTodo={addTodo} />
     </div>
   );
