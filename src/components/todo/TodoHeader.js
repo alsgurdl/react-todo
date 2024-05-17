@@ -7,8 +7,9 @@ const TodoHeader = ({ count }) => {
   const dateString = today.toLocaleDateString('ko-KR', {
     year: 'numeric',
     month: 'long',
-    day: '2-digit',
+    day: 'numeric',
   });
+
   const dayName = today.toLocaleDateString('ko-KR', {
     weekday: 'long',
   });
