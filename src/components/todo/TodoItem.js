@@ -1,5 +1,5 @@
 import React from 'react';
-import '../scss/TodoItem.scss';
+import '../../scss/TodoItem.scss';
 import { MdDelete, MdDone } from 'react-icons/md';
 import cn from 'classnames';
 
@@ -10,7 +10,7 @@ const TodoItem = ({ item, remove, check }) => {
     <li className="todo-list-item">
       <div
         className={cn('check-circle', { active: done })}
-        onClick={() => check(id)}
+        onClick={() => check(id, done)}
       >
         <MdDone />
       </div>
