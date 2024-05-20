@@ -18,6 +18,8 @@ const Login = () => {
     // 이메일과 비밀번호를 직접 지목해서 얻어오세요. (getElementById로 직접 지목해서 가져오세요.)
     // 요청 방식: POST / email, password라는 이름으로 JSON을 전송하세요.
     // 응답 데이터를 console.log로 확인하세요.
+    // 응답 데이터를 console.log로 확인하세요.
+    // 응답 데이터를 console.log로 확인하세요.
   };
 
   const loginHandler = (e) => {
