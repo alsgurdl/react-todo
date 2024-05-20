@@ -20,6 +20,13 @@ const Login = () => {
     // 응답 데이터를 console.log로 확인하세요.
     // 응답 데이터를 console.log로 확인하세요.
     // 응답 데이터를 console.log로 확인하세요.
+    const $email = document.getElementById('email');
+    const $password = document.getElementById('password');
+    fetch(`${BASE}${USER}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify($email, $password),
+    });
   };
 
   const loginHandler = (e) => {
