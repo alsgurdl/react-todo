@@ -5,10 +5,12 @@ import Header from './components/layout/Header';
 import { Route, Routes } from 'react-router-dom';
 import Login from './components/user/Login';
 import Join from './components/user/Join';
+import { AuthContextProvider } from './utils/AuthContext';
 
 function App() {
   return (
-    <>
+    //데이터를 전달하고자 하는 자식 컴넌트를 provider로 감쌈니다
+    <AuthContextProvider>
       <div className="wrapper">
         <Header />
 
@@ -22,7 +24,7 @@ function App() {
 
         <Footer />
       </div>
-    </>
+    </AuthContextProvider>
   );
 }
 
