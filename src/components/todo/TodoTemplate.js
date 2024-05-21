@@ -5,12 +5,18 @@ import TodoInput from './TodoInput';
 import '../../scss/TodoTemplate.scss';
 import { useNavigate } from 'react-router-dom';
 import { Spinner } from 'reactstrap';
+import {
+  API_BASE_URL as BASE,
+  TODO,
+  USER,
+} from '../../config/host-config';
 
 const TodoTemplate = () => {
   const redirection = useNavigate();
 
   // 백엔드 서버에 할 일 목록(json)을 요청(fetch)해서 받아와야 함.
-  const API_BASE_URL = 'http://localhost:8181/api/todos';
+  const API_BASE_URL = BASE + TODO;
+  const API_USER_URL = BASE + USER;
 
   // todos 배열을 상태 관리
   const [todos, setTodos] = useState([]);
@@ -97,6 +103,12 @@ const TodoTemplate = () => {
   // 체크가 안 된 할 일의 개수를 카운트 하기
   const countRestTodo = () =>
     todos.filter((todo) => !todo.done).length;
+  const fetchPromote = async () => {
+    const res = await fetch(API_USER_URL + '/promote', {
+      method: 'PUT',
+      headers: requestHeader,
+    });
+  };
 
   useEffect(() => {
     // 페이지가 처음 렌더링 됨과 동시에 할 일 목록을 서버에 요청해서 뿌려 주겠습니다.
@@ -124,7 +136,10 @@ const TodoTemplate = () => {
   //로딩이 끝난휴보여줄
   const loadEndPage = (
     <div className="TodoTemplate">
-      <TodoHeader count={countRestTodo} />
+      <TodoHeader
+        count={countRestTodo}
+        promote={fetchPromote}
+      />
       <TodoMain
         todoList={todos}
         remove={removeTodo}
