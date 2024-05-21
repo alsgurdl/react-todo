@@ -10,28 +10,27 @@ import {
   API_BASE_URL as BASE,
   USER,
 } from '../../config/host-config';
-import { result } from 'lodash';
 import AuthContext from '../../utils/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const REQUEST_URL = BASE + USER + '/signin';
+
   const { onLogin } = useContext(AuthContext);
 
   const redirection = useNavigate();
 
-  //서버에 비동기 로그인 요청 AJZX요청
-  //함수 아에 async를 붙이면 해당 함수는 프로미스 객체를 바로 리턴
+  // 서버에 비동기 로그인 요청(AJAX 요청)
+  // 함수 앞에 async를 붙이면 해당 함수는 프로미스 객체를 바로 리턴합니다.
   const fetchLogin = async () => {
-    // 이메일과 비밀번호를 직접 지목해서 얻어오세요. (getElementById로 직접 지목해서 가져오세요.)
-    // 요청 방식: POST / email, password라는 이름으로 JSON을 전송하세요.
-    // 응답 데이터를 console.log로 확인하세요.
-
+    // 이메일, 비밀번호 입력 태그 취득하기
     const $email = document.getElementById('email');
     const $password = document.getElementById('password');
-    //await는 async로 선언된 함수에서만 사용이 가능
-    //awit는 프로미스객체가 처리될 때까지 기다림
-    //
+
+    // await는 async로 선언된 함수에서만 사용이 가능합니다.
+    // await는 프로미스 객체가 처리될 때까지 기다립니다.
+    // 프로미스 객체의 반환값을 바로 활용할 수 있도록 도와줍니다.
+    // then()을 활용하는 것보다 가독성이 좋고, 쓰기도 쉽습니다.
     const res = await fetch(REQUEST_URL, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -46,34 +45,41 @@ const Login = () => {
       alert(text);
       return;
     }
-    const { token, userName, email, role } =
-      await res.json(); //서버에서 전달된 json을 변수에 저장
-    //contextapi를 사용하여 로그인 상탸를 업데이트
-    onLogin(token, userName, role);
-    redirection('/');
-    //홈으로 리다이렉트
 
-    // fetch(`${BASE}${USER}`, {
-    //   method: 'POST',
-    //   headers: { 'content-type': 'application/json' },
-    //   body: JSON.stringify({
-    //     email: $email,
-    //     password: $password,
-    //   }),
-    // })
-    //   .then((res) => res.json())
-    //   .then((result) => {
-    //     console.log(result);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    const { token, userName, email, role } =
+      await res.json(); // 서버에서 전달된 json을 변수에 저장.
+
+    // Context API를 사용하여 로그인 상태를 업데이트 합니다.
+    onLogin(token, userName, role);
+
+    // 홈으로 리다이렉트
+    redirection('/');
+
+    /*
+    fetch(REQUEST_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        email: $email.value,
+        password: $password.value,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      */
   };
 
   const loginHandler = (e) => {
     e.preventDefault();
-    //입력값에 관련되 처리를 하고 싶으면 여기서
+    // 입력값에 관련된 처리를 하고 싶다면 여기서 하시면 됩니다.
+    // 예제에서는 생략하겠습니다.
 
+    // 서버에 로그인 요청 전송
     fetchLogin();
   };
 
