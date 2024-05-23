@@ -20,8 +20,10 @@ const TodoTemplate = () => {
 
   // todos 배열을 상태 관리
   const [todos, setTodos] = useState([]);
-  //로딩 상태값 관리
+
+  // 로딩 상태값 관리 (처음에는 로딩이 무조건 필요하기 때문에 true -> 로딩 끝나면 false로 전환)
   const [loading, setLoading] = useState(true);
+
   // 로그인 인증 토큰 얻어오기
   const [token, setToken] = useState(
     localStorage.getItem('ACCESS_TOKEN'),
@@ -54,12 +56,14 @@ const TodoTemplate = () => {
     if (res.status === 200) {
       const json = await res.json();
       setTodos(json.todos);
+    } else if (res.status === 401) {
+      const message = await res.text();
+      alert(message);
+      redirection('/login');
     } else if (res.status === 403) {
       const text = await res.text();
       alert(text);
     }
-    const json = await res.json();
-    setTodos(json.todos);
 
     /*
     fetch(API_BASE_URL, {
@@ -111,6 +115,8 @@ const TodoTemplate = () => {
   // 체크가 안 된 할 일의 개수를 카운트 하기
   const countRestTodo = () =>
     todos.filter((todo) => !todo.done).length;
+
+  // 비동기 방식 등급 승격 함수
   const fetchPromote = async () => {
     const res = await fetch(API_USER_URL + '/promote', {
       method: 'PUT',
@@ -118,7 +124,7 @@ const TodoTemplate = () => {
     });
 
     if (res.status === 400) {
-      alert('이미 프리미엄 회원입니다');
+      alert('이미 프리미엄 회원입니다.');
     } else if (res.status === 200) {
       const json = await res.json();
       localStorage.setItem('ACCESS_TOKEN', json.token);
@@ -146,12 +152,13 @@ const TodoTemplate = () => {
         // fetch를 통해 받아온 데이터를 상태 변수에 할당
         if (json) setTodos(json.todos);
 
-        //로딩완료처리
+        // 로딩 완료 처리
         setLoading(false);
       });
   }, []);
-  //로딩이 끝난휴보여줄
-  const loadEndPage = (
+
+  // 로딩이 끝난 후 보여줄 컴포넌트
+  const loadEndedPage = (
     <div className="TodoTemplate">
       <TodoHeader
         count={countRestTodo}
@@ -165,13 +172,15 @@ const TodoTemplate = () => {
       <TodoInput addTodo={addTodo} />
     </div>
   );
+
+  // 로딩 중일 때 보여줄 컴포넌트
   const loadingPage = (
     <div className="loading">
-      <Spinner>loading...</Spinner>
+      <Spinner color="danger">loading...</Spinner>
     </div>
   );
-  //로딩 중을 때 보여줄 컴포넌트
-  return <>{loading ? loadingPage : loadEndPage}</>;
+
+  return <>{loading ? loadingPage : loadEndedPage}</>;
 };
 
 export default TodoTemplate;
